@@ -23,6 +23,16 @@ GOLANGCI_VERSION:=1.51.2
 GOPATH:=$(shell go env GOPATH)
 REPO_DIR:=$(shell pwd)
 
+
+FIPS_ENABLE ?= ""
+BUILDER_GOLANG_VERSION ?= 1.21
+BUILD_ARGS = --build-arg CRYPTO_LIB=${FIPS_ENABLE} --build-arg BUILDER_GOLANG_VERSION=${BUILDER_GOLANG_VERSION}
+
+IMG_PATH ?= "gcr.io/spectro-dev-public/${USER}"
+IMG_TAG ?= "latest"
+IMG_SERVICE_URL ?= ${IMG_PATH}/
+MTS_IMG ?= ${IMG_SERVICE_URL}metrics-server:${IMG_TAG}
+
 .PHONY: all
 all: metrics-server
 
@@ -56,6 +66,9 @@ container-all: $(CONTAINER_ARCH_TARGETS);
 .PHONY: $(CONTAINER_ARCH_TARGETS)
 $(CONTAINER_ARCH_TARGETS): container-%:
 	ARCH=$* $(MAKE) container
+
+docker:
+	docker buildx build --platform linux/amd64,linux/arm64 --push . -t ${MTS_IMG} ${BUILD_ARGS} -f Dockerfile
 
 # Official Container Push Rules
 # -----------------------------
