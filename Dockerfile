@@ -11,12 +11,10 @@ RUN mkdir -p bin
 
 RUN if [ ${CRYPTO_LIB} ]; \
     then \
-      go-build-fips.sh -a -o bin/metrics-server cmd/metrics-server/metrics-server.go ;\
+      go-build-fips.sh -a -o bin/metrics-server cmd/metrics-server ;\
     else \
-      go-build-static.sh -a -o bin/metrics-server cmd/metrics-server/metrics-server.go ;\
+      go-build-static.sh -a -o bin/metrics-server cmd/metrics-server ;\
     fi
-
-RUN ls cmd/metrics-server/spectro_fipsonly.go
 
 FROM --platform=$TARGETPLATFORM scratch
 COPY --from=builder /workspace/bin/metrics-server /
