@@ -11,9 +11,9 @@ RUN mkdir -p bin
 
 RUN if [ ${CRYPTO_LIB} ]; \
     then \
-      go-build-fips.sh -a -o bin/metrics-server cmd/metrics-server ;\
+      go-build-fips.sh -a -o bin/metrics-server cmd/metrics-server/metrics-server.go ;\
     else \
-      go-build-static.sh -a -o bin/metrics-server cmd/metrics-server ;\
+      go-build-static.sh -a -o bin/metrics-server cmd/metrics-server/metrics-server.go ;\
     fi
 
 FROM --platform=$TARGETPLATFORM scratch
